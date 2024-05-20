@@ -18,7 +18,7 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
 
-    private final static LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
+    private static final LocalDate MIN_RELEASE_DATE = LocalDate.of(1895, 12, 28);
     private final Map<Long, Film> films = new HashMap<>();
 
     @GetMapping
