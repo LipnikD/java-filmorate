@@ -1,8 +1,8 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import io.micrometer.common.util.StringUtils;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -28,7 +28,7 @@ public class UserController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        if (user.getName() == null || user.getName().isBlank()) {
+        if (StringUtils.isBlank(user.getName())) {
             user.setName(user.getLogin());
             log.info("При создании пользователя с идентификатором " + user.getId()
                     + " не указано имя (поле 'name'). Вместо имени использован логин (поле 'login')");
@@ -40,7 +40,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@Valid @Validated @RequestBody User newUser) {
+    public User update(@Valid @RequestBody User newUser) {
         if (!users.containsKey(newUser.getId())) {
             String message = "Не найден пользователь с идентификатором: " + newUser.getId();
             log.error(message);
