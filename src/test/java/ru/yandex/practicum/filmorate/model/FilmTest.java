@@ -5,6 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,23 +19,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmTest {
 
-    FilmController filmController;
+    private FilmController filmController;
     Validator validator;
 
     @BeforeEach
     void beforeEach() {
-        filmController = new FilmController();
+        FilmStorage filmStorage = new InMemoryFilmStorage();
+        UserStorage userStorage = new InMemoryUserStorage();
+        FilmService  filmService = new FilmService(filmStorage, userStorage);
+        filmController = new FilmController(filmService);
         validator = buildDefaultValidatorFactory().getValidator();
     }
 
     @Test
     void addGoodFilm() {
-        Film film = Film.builder()
-                .name("Имя фильма")
-                .description("Описание фильма")
-                .duration(120)
-                .releaseDate(LocalDate.now().minusYears(3))
-                .build();
+        Film film = new Film();
+        film.setName("Имя фильма");
+        film.setDescription("Описание фильма");
+        film.setDuration(120);
+        film.setReleaseDate(LocalDate.now().minusYears(3));
         filmController.create(film);
         List<Film> films = filmController.findAll();
         assertEquals(1, films.size(), "Ошибка при сохранении фильма.");
@@ -39,12 +46,11 @@ class FilmTest {
 
     @Test
     void updateFilm() {
-        Film film = Film.builder()
-                .name("Имя фильма")
-                .description("Описание фильма")
-                .duration(120)
-                .releaseDate(LocalDate.now().minusYears(3))
-                .build();
+        Film film = new Film();
+        film.setName("Имя фильма");
+        film.setDescription("Описание фильма");
+        film.setDuration(120);
+        film.setReleaseDate(LocalDate.now().minusYears(3));
         filmController.create(film);
         film.setDescription("English version of description");
         filmController.update(film);
@@ -54,27 +60,25 @@ class FilmTest {
 
     @Test
     void addUserWrongDescription() {
-        Film film = Film.builder()
-                .name("Имя фильма")
-                .description("Съешь ещё этих мягких французских булок, да выпей чаю. " +
+        Film film = new Film();
+        film.setName("Имя фильма");
+        film.setDescription("Съешь ещё этих мягких французских булок, да выпей чаю. " +
                         "Съешь ещё этих мягких французских булок, да выпей чаю. " +
                         "Съешь ещё этих мягких французских булок, да выпей чаю. " +
-                        "Съешь ещё этих мягких французских булок, да выпей чаю.")
-                .duration(120)
-                .releaseDate(LocalDate.now().minusYears(3))
-                .build();
+                        "Съешь ещё этих мягких французских булок, да выпей чаю.");
+        film.setDuration(120);
+        film.setReleaseDate(LocalDate.now().minusYears(3));
         assertEquals(1, validator.validate(film).size(),
                 "Ошибка валидации фильма с очень длинным описанием");
     }
 
     @Test
     void addUserWrongReleaseDate() {
-        Film film = Film.builder()
-                .name("Имя фильма")
-                .description("Умеренное описание фильма.")
-                .duration(120)
-                .releaseDate(LocalDate.of(1700, 1, 1))
-                .build();
+        Film film = new Film();
+        film.setName("Имя фильма");
+        film.setDescription("Умеренное описание фильма.");
+        film.setDuration(120);
+        film.setReleaseDate(LocalDate.of(1700, 1, 1));
         assertThrows(ValidationException.class, () -> filmController.create(film));
     }
 }

@@ -3,14 +3,19 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@Builder
+@Component
+@NoArgsConstructor
 public class Film {
+
     private Long id;
 
     @NotBlank
@@ -23,5 +28,8 @@ public class Film {
     private LocalDate releaseDate;
 
     @Positive
-    private int duration;
+    private Integer duration;
+
+    private Set<Long> likes = new HashSet<>();
+
 }
