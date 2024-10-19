@@ -15,14 +15,14 @@ public class FilmorateExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final NotFoundException e) {
-        log.error(e.getMessage());
+        log.error("Ошибка: ", e);
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidation(final ValidationException e) {
-        log.error(e.getMessage());
+        log.error("Ошибка: ", e);
         return new ErrorResponse(e.getMessage());
     }
 

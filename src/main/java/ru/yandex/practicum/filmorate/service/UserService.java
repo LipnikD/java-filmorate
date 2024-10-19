@@ -1,19 +1,17 @@
 package ru.yandex.practicum.filmorate.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
 
-    @Autowired
     private final UserStorage userStorage;
 
-    @Autowired
     public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
@@ -36,7 +34,7 @@ public class UserService {
 
     public User addFriend(Long id, Long friendId) {
 
-        if (id.equals(friendId)) {
+        if (Objects.equals(id, friendId)) {
             throw new ValidationException("Нельзя добавить пользователя в друзья к самому себе");
         }
 
