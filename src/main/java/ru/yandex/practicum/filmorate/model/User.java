@@ -4,12 +4,17 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-@Builder
+@Component
+@NoArgsConstructor
 public class User {
+
     private Long id;
 
     @NotBlank
@@ -23,4 +28,7 @@ public class User {
 
     @Past
     private LocalDate birthday;
+
+    private Set<Long> friends = new HashSet<>();
+
 }
